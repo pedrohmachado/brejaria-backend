@@ -1,6 +1,6 @@
 # brejaria-backend
 
-### run main
+### run backend server
 ```
 go run main.go
 ```
