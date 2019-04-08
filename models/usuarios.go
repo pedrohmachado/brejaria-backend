@@ -7,7 +7,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/jinzhu/gorm"
 	u "github.com/pedrohmachado/brejaria-backend/utils"
 )
 
@@ -19,10 +18,10 @@ type Token struct {
 
 // Usuario modelo
 type Usuario struct {
-	gorm.Model
-	Email string `json: "email"`
-	Senha string `json: "senha"`
-	Token string `json: "token; sql:"-"`
+	ID    uint   `gorm:"AUTO_INCREMENT" form:"id" json:"id"`
+	Email string `gorm:"not null" json: "email"`
+	Senha string `gorm:"not null" json: "senha"`
+	Token string `gorm:"not null" json: "token; sql:"-"`
 }
 
 // Valida valida dados de usuario
@@ -47,7 +46,8 @@ func (usuario *Usuario) Valida() (map[string]interface{}, bool) {
 	return u.Message(false, "Requisição aprovada"), true
 }
 
-func (usuario *Usuario) Criar() map[string]interface{} {
+// Cria usuario
+func (usuario *Usuario) Cria() map[string]interface{} {
 
 	if resp, ok := usuario.Valida(); !ok {
 		return resp
@@ -57,6 +57,15 @@ func (usuario *Usuario) Criar() map[string]interface{} {
 	usuario.Senha = string(hashedSenha)
 
 	// bd => criar registro na tabela de usuarios
+	db := InitDB()
+	defer db.Close()
+
+	if !db.HasTable(&Usuario{}) {
+		db.CreateTable(&Usuario{})
+		db.Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Usuario{})
+	}
+
+	db.Create(&usuario)
 
 	if usuario.ID <= 0 {
 		return u.Message(false, "Falha no cadastro, erro de conexão")

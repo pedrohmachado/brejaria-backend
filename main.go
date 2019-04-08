@@ -5,6 +5,10 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/pedrohmachado/brejaria-backend/controllers"
+
+	_ "github.com/mattn/go-sqlite3"
+
 	"github.com/gorilla/mux"
 )
 
@@ -14,6 +18,8 @@ func main() {
 
 	// middleware para autenticação com jwt
 	//router.Use(app.JwtAuthentication)
+
+	router.HandleFunc("/api/usuario/novo", controllers.CriaUsuario)
 
 	port := os.Getenv("PORT")
 

@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -12,6 +11,7 @@ import (
 	u "github.com/pedrohmachado/brejaria-backend/utils"
 )
 
+//JwtAuthentication token
 var JwtAuthentication = func(next http.Handler) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -72,8 +72,8 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 		}
 
 		//Everything went well, proceed with the request and set the caller to the user retrieved from the parsed token
-		fmt.Sprintf("User %", tk.Username) //Useful for monitoring
-		ctx := context.WithValue(r.Context(), "user", tk.UserId)
+		//fmt.Sprintf("Usuario %", tk.IDUsuario) //Useful for monitoring
+		ctx := context.WithValue(r.Context(), "usuario", tk.IDUsuario)
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r) //proceed in the middleware chain!
 	})
