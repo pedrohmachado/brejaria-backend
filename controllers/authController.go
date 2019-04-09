@@ -12,12 +12,28 @@ import (
 var CriaUsuario = func(w http.ResponseWriter, r *http.Request) {
 
 	usuario := &models.Usuario{}
-	err := json.NewDecoder(r.Body).Decode(usuario) //decode the request body into struct and failed if any error occur
+
+	err := json.NewDecoder(r.Body).Decode(usuario) // decoda a requisição
 	if err != nil {
-		u.Respond(w, u.Message(false, "Invalid request"))
+		u.Respond(w, u.Message(false, "Requisição inválida"))
 		return
 	}
 
-	resp := usuario.Cria() //Create account
+	resp := usuario.Cria() // cria usuario
+	u.Respond(w, resp)
+}
+
+// Autentica o login do usuario
+var Autentica = func(w http.ResponseWriter, r *http.Request) {
+
+	usuario := &models.Usuario{}
+
+	err := json.NewDecoder(r.Body).Decode(usuario) // decoda a requisição
+	if err != nil {
+		u.Respond(w, u.Message(false, "Requisição inválida"))
+		return
+	}
+
+	resp := models.Login(usuario.Email, usuario.Senha)
 	u.Respond(w, resp)
 }
