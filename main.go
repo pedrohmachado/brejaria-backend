@@ -39,7 +39,7 @@ func main() {
 	// listagem de todos os eventos
 	router.HandleFunc("/api/eventos", controllers.GetEventos).Methods("GET")
 	// adiciona participante a evento
-	router.HandleFunc("/api/evento/{id}/participante", controllers.AdicionaParticipante).Methods("POST")
+	router.HandleFunc("/api/evento/{id}/participar", controllers.AdicionaParticipante).Methods("POST")
 
 	port := os.Getenv("PORT")
 

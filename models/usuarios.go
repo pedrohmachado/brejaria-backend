@@ -20,11 +20,11 @@ type Token struct {
 
 // Usuario modelo
 type Usuario struct {
-	ID      uint     `gorm:"AUTO_INCREMENT" form:"id" json:"id"`
-	Email   string   `gorm:"not null" json:"email"`
-	Senha   string   `gorm:"not null" json:"senha"`
-	Token   string   `gorm:"not null" json:"token"`
-	Eventos []Evento `gorm:"many2many:usuario_evento;" json:"eventos"`
+	ID    uint   `gorm:"AUTO_INCREMENT" form:"id" json:"id"`
+	Email string `gorm:"not null" json:"email"`
+	Senha string `gorm:"not null" json:"senha"`
+	Token string `gorm:"not null" json:"token"`
+	//Eventos []Evento `gorm:"many2many:usuario_evento;" json:"eventos"`
 }
 
 // Valida valida dados de usuario
@@ -130,8 +130,8 @@ func Login(email, senha string) map[string]interface{} {
 	return resp
 }
 
-// LocalizaUsuario pelo id
-func LocalizaUsuario(ID uint) *Usuario {
+// GetUsuario pelo id
+func GetUsuario(ID uint) *Usuario {
 	usuario := &Usuario{}
 
 	db := InitDB()

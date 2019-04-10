@@ -43,7 +43,7 @@ var GetEventosParams = func(w http.ResponseWriter, r *http.Request) {}
 // GetMeusEventos com o ID do usuario por contexto
 var GetMeusEventos = func(w http.ResponseWriter, r *http.Request) {}
 
-// AdicionaParticipante com o ID do participante por contexto
+// AdicionaParticipante com o ID do participante por contexto e ID do evento por parametro
 var AdicionaParticipante = func(w http.ResponseWriter, r *http.Request) {
 
 	IDParticipante := r.Context().Value("usuario").(uint)

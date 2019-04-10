@@ -9,19 +9,15 @@ import (
 
 // Evento modelo
 type Evento struct {
-	ID            uint      `gorm:"AUTO_INCREMENT" form:"id" json:"id"`
-	Nome          string    `gorm:"not null" json:"nome"`
-	Descricao     string    `gorm:"not null" json:"descricao"`
-	Local         string    `gorm:"not null" json:"local"`
-	DataEvento    string    `gorm:"not null" json:"data_evento"`
-	DataCriacao   string    `gorm:"not null" json:"data_criacao"`
-	Status        string    `gorm:"not null" json:"status"`
-	IDUsuario     uint      `gorm:"not null" json:"usuario_id"`
-	Participantes []Usuario `gorm:"many2many:usuario_evento;" json:"participantes"`
-}
-
-type Participantes struct {
-	Participantes []
+	ID            uint       `gorm:"AUTO_INCREMENT;primary_key:true" form:"id" json:"id"`
+	Nome          string     `gorm:"not null" json:"nome"`
+	Descricao     string     `gorm:"not null" json:"descricao"`
+	Local         string     `gorm:"not null" json:"local"`
+	DataEvento    string     `gorm:"not null" json:"data_evento"`
+	DataCriacao   string     `gorm:"not null" json:"data_criacao"`
+	Status        string     `gorm:"not null" json:"status"`
+	IDUsuario     uint       `gorm:"not null" json:"usuario_id"`
+	Participantes []*Usuario `gorm:"many2many:evento_usuarios" json:"participantes"`
 }
 
 // Valida dados de entrada do evento
@@ -71,12 +67,19 @@ func (evento *Evento) Cria() map[string]interface{} {
 	// dados de entrada fixos
 	evento.DataCriacao = time.Now().Format(layout)
 	evento.Status = "ativo"
-	evento.Participantes = append(evento.Participantes, evento.IDUsuario)
 
+	// usuario criador como participante (teste)
+	participante := GetUsuario(evento.IDUsuario)
+	participante2 := GetUsuario((evento.IDUsuario + 1))
+	evento.Participantes = append(evento.Participantes, participante)
+	evento.Participantes = append(evento.Participantes, participante2)
+
+	//bd inserir e associação
 	db := InitDB()
 	defer db.Close()
 
 	db.Create(&evento)
+	db.Preload("Participantes").Find(&evento)
 
 	resp := u.Message(true, "Evento cadastrado com sucesso")
 	resp["evento"] = evento
@@ -87,17 +90,14 @@ func (evento *Evento) Cria() map[string]interface{} {
 func AdicionaParticipante(IDEvento, IDParticipante uint) map[string]interface{} {
 
 	evento := GetEvento(IDEvento)
-	//evento.IDParticipantes = append(evento.IDParticipantes, IDParticipante)
+	participante := GetUsuario(IDParticipante)
+	evento.Participantes = append(evento.Participantes, participante)
 
 	db := InitDB()
 	defer db.Close()
 
-	err := db.Save(&evento).Error
-
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
+	db.Save(&evento)
+	db.Preload("Participantes").Find(&evento)
 
 	resp := u.Message(true, "Participante adicionado com sucesso")
 	resp["evento"] = evento
@@ -111,6 +111,7 @@ func GetEvento(ID uint) *Evento {
 	db := InitDB()
 	defer db.Close()
 
+	db.Preload("Participantes").Find(&evento)
 	err := db.Table("eventos").Where("id = ?", ID).First(evento).Error
 
 	if err != nil {
@@ -137,7 +138,7 @@ func GetEventosUsuario(IDUsuario uint) []*Evento {
 	return eventos
 }
 
-// GetEventos localiza todos os eventos pelo status
+// GetEventos localiza todos os eventos
 func GetEventos() []*Evento {
 	eventos := make([]*Evento, 0)
 
