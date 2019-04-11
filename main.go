@@ -25,21 +25,21 @@ func main() {
 	router.HandleFunc("/api/usuario/novo", controllers.CriaUsuario).Methods("POST")
 	router.HandleFunc("/api/usuario/login", controllers.Autentica).Methods("POST")
 
+	router.HandleFunc("/api/eu", controllers.GetUsuario).Methods("GET")
+
 	router.HandleFunc("/api/produto/novo", controllers.CriaProduto).Methods("POST")
-	// listagem com id por parametro
-	router.HandleFunc("/api/usuario/{id}/produtos", controllers.GetMeusProdutosParams).Methods("GET")
-	// listagem com id por contexto
+	router.HandleFunc("/api/usuario/{id}/produtos", controllers.GetProdutosParams).Methods("GET")
 	router.HandleFunc("/api/eu/produtos", controllers.GetMeusProdutos).Methods("GET")
+	router.HandleFunc("/api/produtos", controllers.GetProdutos).Methods("GET")
+
+	router.HandleFunc("/api/evento/{id}/participantes", controllers.GetParticipantesEvento).Methods("GET")
+	router.HandleFunc("/api/evento/{id}/produtos", controllers.GetProdutosEvento).Methods("GET")
 
 	router.HandleFunc("/api/evento/novo", controllers.CriaEvento).Methods("POST")
-	// listagem com id por contexto
-	router.HandleFunc("/api/eu/eventos", controllers.GetMeusEventos).Methods("GET")
-	// listagem com id por parametro
-	router.HandleFunc("/api/usuario/{id}/eventos", controllers.GetEventosParams).Methods("GET")
-	// listagem de todos os eventos
-	router.HandleFunc("/api/eventos", controllers.GetEventos).Methods("GET")
-	// adiciona participante a evento
 	router.HandleFunc("/api/evento/{id}/participar", controllers.AdicionaParticipante).Methods("POST")
+	router.HandleFunc("/api/usuario/{id}/eventos", controllers.GetEventosUsuarioParams).Methods("GET")
+	router.HandleFunc("/api/eu/eventos", controllers.GetMeusEventos).Methods("GET")
+	router.HandleFunc("/api/eventos", controllers.GetEventos).Methods("GET")
 
 	port := os.Getenv("PORT")
 

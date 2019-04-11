@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -28,21 +29,6 @@ var CriaEvento = func(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// GetEventos todos
-var GetEventos = func(w http.ResponseWriter, r *http.Request) {
-	data := models.GetEventos()
-
-	resp := u.Message(true, "Sucesso")
-	resp["data"] = data
-	u.Respond(w, resp)
-}
-
-// GetEventosParams com o ID do usuario por parametro
-var GetEventosParams = func(w http.ResponseWriter, r *http.Request) {}
-
-// GetMeusEventos com o ID do usuario por contexto
-var GetMeusEventos = func(w http.ResponseWriter, r *http.Request) {}
-
 // AdicionaParticipante com o ID do participante por contexto e ID do evento por parametro
 var AdicionaParticipante = func(w http.ResponseWriter, r *http.Request) {
 
@@ -58,6 +44,57 @@ var AdicionaParticipante = func(w http.ResponseWriter, r *http.Request) {
 
 	data := models.AdicionaParticipante(uint(IDEvento), IDParticipante)
 
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
+// GetEventos todos
+var GetEventos = func(w http.ResponseWriter, r *http.Request) {
+	data := models.GetEventos()
+
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
+// GetEventosUsuarioParams com o ID do usuario por parametro
+var GetEventosUsuarioParams = func(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	IDUsuario, err := strconv.Atoi(params["id"])
+
+	if err != nil {
+		fmt.Print(err)
+		return
+	}
+
+	data := models.GetEventosUsuario(uint(IDUsuario))
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
+// GetMeusEventos com o ID do usuario por contexto
+var GetMeusEventos = func(w http.ResponseWriter, r *http.Request) {
+	IDUsuario := r.Context().Value("usuario").(uint)
+
+	data := models.GetEventosUsuario(uint(IDUsuario))
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
+// GetParticipantesEvento lista todos os participantes de um evento
+var GetParticipantesEvento = func(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	IDEvento, err := strconv.Atoi(params["id"])
+
+	if err != nil {
+		fmt.Print(err)
+		return
+	}
+
+	data := models.GetParticipantesEvento(uint(IDEvento))
 	resp := u.Message(true, "Sucesso")
 	resp["data"] = data
 	u.Respond(w, resp)

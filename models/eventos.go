@@ -68,11 +68,9 @@ func (evento *Evento) Cria() map[string]interface{} {
 	evento.DataCriacao = time.Now().Format(layout)
 	evento.Status = "ativo"
 
-	// usuario criador como participante (teste)
+	// usuario criador como participante
 	participante := GetUsuario(evento.IDUsuario)
-	participante2 := GetUsuario((evento.IDUsuario + 1))
 	evento.Participantes = append(evento.Participantes, participante)
-	evento.Participantes = append(evento.Participantes, participante2)
 
 	//bd inserir e associação
 	db := InitDB()
@@ -128,7 +126,7 @@ func GetEventosUsuario(IDUsuario uint) []*Evento {
 	db := InitDB()
 	defer db.Close()
 
-	err := db.Table("eventos").Where("id_usuario = ?", IDUsuario).First(&eventos).Error
+	err := db.Table("eventos").Where("id_usuario = ?", IDUsuario).Find(&eventos).Error
 
 	if err != nil {
 		fmt.Println(err)
@@ -153,4 +151,19 @@ func GetEventos() []*Evento {
 	}
 
 	return eventos
+}
+
+// GetParticipantesEvento lista todos os participantes de um evento pelo id do evento
+func GetParticipantesEvento(IDEvento uint) []*Usuario {
+
+	evento := GetEvento(IDEvento)
+	participantes := make([]*Usuario, 0)
+
+	db := InitDB()
+	defer db.Close()
+
+	db.Preload("Participantes").First(&evento)
+	db.Table("usuarios").Joins("inner join evento_usuarios on evento_usuarios.usuario_id = usuarios.id").Where("evento_usuarios.evento_id = ?", IDEvento).Scan(&participantes)
+
+	return participantes
 }

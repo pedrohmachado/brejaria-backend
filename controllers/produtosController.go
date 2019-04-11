@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -27,8 +28,8 @@ var CriaProduto = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
-// GetMeusProdutosParams com o ID do usuario por parametro
-var GetMeusProdutosParams = func(w http.ResponseWriter, r *http.Request) {
+// GetProdutosParams com o ID do usuario por parametro
+var GetProdutosParams = func(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 	IDUsuario, err := strconv.Atoi(params["id"])
@@ -38,7 +39,7 @@ var GetMeusProdutosParams = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := models.GetProdutos(uint(IDUsuario))
+	data := models.GetProdutosUsuario(uint(IDUsuario))
 	resp := u.Message(true, "Sucesso")
 	resp["data"] = data
 	u.Respond(w, resp)
@@ -49,7 +50,33 @@ var GetMeusProdutos = func(w http.ResponseWriter, r *http.Request) {
 
 	IDUsuario := r.Context().Value("usuario").(uint)
 
-	data := models.GetProdutos(uint(IDUsuario))
+	data := models.GetProdutosUsuario(uint(IDUsuario))
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
+// GetProdutos lista todos os produtos
+var GetProdutos = func(w http.ResponseWriter, r *http.Request) {
+	data := models.GetProdutos()
+
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
+// GetProdutosEvento lista todos os produtos de um evento
+var GetProdutosEvento = func(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	IDEvento, err := strconv.Atoi(params["id"])
+
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	data := models.GetProdutosEvento(uint(IDEvento))
+
 	resp := u.Message(true, "Sucesso")
 	resp["data"] = data
 	u.Respond(w, resp)

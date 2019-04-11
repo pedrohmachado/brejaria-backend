@@ -70,19 +70,51 @@ func GetProduto(ID uint) *Produto {
 	return produto
 }
 
-// GetProdutos localiza todos os produtos de um usuario pelo id do usuario
-func GetProdutos(IDUsuario uint) []*Produto {
+// GetProdutosUsuario localiza todos os produtos de um usuario pelo id do usuario
+func GetProdutosUsuario(IDUsuario uint) []*Produto {
 	produtos := make([]*Produto, 0)
 
 	db := InitDB()
 	defer db.Close()
 
-	err := db.Table("produtos").Where("id_usuario = ?", IDUsuario).First(&produtos).Error
+	err := db.Table("produtos").Where("id_usuario = ?", IDUsuario).Find(&produtos).Error
 
 	if err != nil {
 		fmt.Println(err)
 		return nil
 	}
+
+	return produtos
+}
+
+// GetProdutos localiza todos os eventos
+func GetProdutos() []*Produto {
+	produtos := make([]*Produto, 0)
+
+	db := InitDB()
+	defer db.Close()
+
+	err := db.Find("produtos").Error
+
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	return produtos
+}
+
+// GetProdutosEvento lista todos os produtos de um evento (encontra evento, encontra participantes e depois encontra produtos)
+func GetProdutosEvento(IDEvento uint) []*Produto {
+
+	evento := GetEvento(IDEvento)
+	produtos := make([]*Produto, 0)
+
+	db := InitDB()
+	defer db.Close()
+
+	db.Preload("Participantes").First(&evento)
+	db.Table("produtos").Joins("inner join evento_usuarios on evento_usuarios.usuario_id = produtos.id_usuario").Where("evento_usuarios.evento_id = ?", IDEvento).Scan(&produtos)
 
 	return produtos
 }
