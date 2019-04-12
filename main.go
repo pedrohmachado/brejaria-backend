@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/rs/cors"
+
 	"github.com/pedrohmachado/brejaria-backend/app"
 
 	"github.com/pedrohmachado/brejaria-backend/controllers"
@@ -18,6 +20,8 @@ import (
 func main() {
 
 	router := mux.NewRouter()
+
+	c := cors.AllowAll()
 
 	// middleware para autenticação com jwt
 	router.Use(app.JwtAuthentication)
@@ -48,7 +52,7 @@ func main() {
 	}
 
 	log.Println("Listening on http://localhost:" + port)
-	err := http.ListenAndServe(":"+port, router)
+	err := http.ListenAndServe(":"+port, c.Handler(router))
 
 	if err != nil {
 		fmt.Print(err)

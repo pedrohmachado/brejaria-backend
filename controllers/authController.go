@@ -29,6 +29,7 @@ var Autentica = func(w http.ResponseWriter, r *http.Request) {
 	usuario := &models.Usuario{}
 
 	err := json.NewDecoder(r.Body).Decode(usuario) // decoda a requisição
+
 	if err != nil {
 		u.Respond(w, u.Message(false, "Requisição inválida"))
 		return
