@@ -35,6 +35,8 @@ var Autentica = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//resp, token := models.Login(usuario.Email, usuario.Senha)
 	resp := models.Login(usuario.Email, usuario.Senha)
+
 	u.Respond(w, resp)
 }

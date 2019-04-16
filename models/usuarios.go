@@ -21,6 +21,7 @@ type Token struct {
 // Usuario modelo
 type Usuario struct {
 	ID    uint   `gorm:"AUTO_INCREMENT" form:"id" json:"id"`
+	Nome  string `gorm:"not null" json:"nome"`
 	Email string `gorm:"not null" json:"email"`
 	Senha string `gorm:"not null" json:"senha"`
 	Token string `gorm:"not null" json:"token"`
@@ -36,6 +37,10 @@ func (usuario *Usuario) Valida() (map[string]interface{}, bool) {
 
 	if len(usuario.Senha) < 6 {
 		return u.Message(false, "Senha válida requer no mínimo 6 caracteres"), false
+	}
+
+	if usuario.Nome == "" {
+		return u.Message(false, "O preenchimento do nome é obrigatório"), false
 	}
 
 	temp := &Usuario{}
