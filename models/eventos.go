@@ -138,12 +138,15 @@ func GetEventosUsuario(IDUsuario uint) []*Evento {
 
 // GetEventos localiza todos os eventos
 func GetEventos() []*Evento {
+	//evento := &Evento{}
 	eventos := make([]*Evento, 0)
 
 	db := InitDB()
 	defer db.Close()
 
-	err := db.Find("eventos").Error
+	db.Preload("Participantes").Find(&eventos)
+	err := db.Table("eventos").Find(&eventos).Error
+	db.Preload("Participantes").Find(&eventos)
 
 	if err != nil {
 		fmt.Println(err)

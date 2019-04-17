@@ -94,7 +94,7 @@ func GetProdutos() []*Produto {
 	db := InitDB()
 	defer db.Close()
 
-	err := db.Find("produtos").Error
+	err := db.Table("produtos").Find(&produtos).Error
 
 	if err != nil {
 		fmt.Println(err)
