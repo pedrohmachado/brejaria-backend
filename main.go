@@ -41,6 +41,7 @@ func main() {
 
 	router.HandleFunc("/api/evento/novo", controllers.CriaEvento).Methods("POST")
 	router.HandleFunc("/api/evento/{id}/participar", controllers.AdicionaParticipante).Methods("POST")
+	router.HandleFunc("/api/evento/{id}/remover", controllers.RemoveParticipante).Methods("POST")
 	router.HandleFunc("/api/usuario/{id}/eventos", controllers.GetEventosUsuarioParams).Methods("GET")
 	router.HandleFunc("/api/eu/eventos", controllers.GetMeusEventos).Methods("GET")
 	router.HandleFunc("/api/eventos", controllers.GetEventos).Methods("GET")

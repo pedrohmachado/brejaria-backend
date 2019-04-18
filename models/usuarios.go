@@ -23,8 +23,8 @@ type Usuario struct {
 	ID    uint   `gorm:"AUTO_INCREMENT" form:"id" json:"id"`
 	Nome  string `gorm:"not null" json:"nome"`
 	Email string `gorm:"not null" json:"email"`
-	Senha string `gorm:"not null" json:"senha"`
-	Token string `gorm:"not null" json:"token"`
+	Senha string `gorm:"not null" json:"senha,omitempty"`
+	Token string `gorm:"not null" json:"token,omitempty"`
 	//Eventos []Evento `gorm:"many2many:usuario_evento;" json:"eventos"`
 }
 
@@ -142,7 +142,7 @@ func GetUsuario(ID uint) *Usuario {
 	db := InitDB()
 	defer db.Close()
 
-	db.Table("usuarios").Where("id = ?", ID).First(usuario)
+	db.Table("usuarios").Where("id = ?", ID).First(&usuario)
 
 	if usuario.Email == "" { // usuario não foi encontrado
 		return nil

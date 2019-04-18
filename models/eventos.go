@@ -94,10 +94,43 @@ func AdicionaParticipante(IDEvento, IDParticipante uint) map[string]interface{} 
 	db := InitDB()
 	defer db.Close()
 
+	db.Preload("Participantes").Find(&evento)
 	db.Save(&evento)
 	db.Preload("Participantes").Find(&evento)
 
 	resp := u.Message(true, "Participante adicionado com sucesso")
+	resp["evento"] = evento
+	return resp
+}
+
+// RemoveParticipante de um evento pelo id do evento e id do participante
+func RemoveParticipante(IDEvento, IDParticipante uint) map[string]interface{} {
+
+	evento := GetEvento(IDEvento)
+	participante := GetUsuario(IDParticipante)
+
+	//participantes := evento.Participantes
+
+	db := InitDB()
+	defer db.Close()
+
+	db.Preload("Participantes").Find(&evento)
+	// remover participante
+	// participantes := evento.Participantes
+	db.Model(&evento).Association("Participantes").Delete(&participante)
+
+	// for index, p := range evento.Participantes {
+	// 	if p.ID == participante.ID {
+	// 		evento.Participantes = append(evento.Participantes[:index], evento.Participantes[index+1:]...)
+	// 	}
+	// }
+
+	// evento.Participantes = participantes
+	db.Save(&evento)
+
+	db.Preload("Participantes").Find(&evento)
+
+	resp := u.Message(true, "Participante removido com sucesso")
 	resp["evento"] = evento
 	return resp
 }

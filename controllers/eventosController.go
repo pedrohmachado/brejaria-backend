@@ -49,6 +49,26 @@ var AdicionaParticipante = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
+// RemoveParticipante com o ID do participante por contexto e ID do evento por parametro
+var RemoveParticipante = func(w http.ResponseWriter, r *http.Request) {
+
+	IDParticipante := r.Context().Value("usuario").(uint)
+
+	params := mux.Vars(r)
+	IDEvento, err := strconv.Atoi(params["id"])
+
+	if err != nil {
+		u.Respond(w, u.Message(false, "Erro na requisição"))
+		return
+	}
+
+	data := models.RemoveParticipante(uint(IDEvento), IDParticipante)
+
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
 // GetEventos todos
 var GetEventos = func(w http.ResponseWriter, r *http.Request) {
 	data := models.GetEventos()
