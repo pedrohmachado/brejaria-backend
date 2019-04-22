@@ -107,25 +107,26 @@ func AdicionaParticipante(IDEvento, IDParticipante uint) map[string]interface{} 
 func RemoveParticipante(IDEvento, IDParticipante uint) map[string]interface{} {
 
 	evento := GetEvento(IDEvento)
-	participante := GetUsuario(IDParticipante)
-
-	//participantes := evento.Participantes
+	participante := &Usuario{}
 
 	db := InitDB()
 	defer db.Close()
 
-	db.Preload("Participantes").Find(&evento)
+	db.Table("usuarios").Where("id = ?", IDParticipante).First(&participante)
+
+	if participante.Email == "" { // usuario não foi encontrado
+		return nil
+	}
+
+	participante.Senha = ""
+
+	//participantes := evento.Participantes
+
+	// db.Preload("Participantes").Find(&evento)
 	// remover participante
 	// participantes := evento.Participantes
 	db.Model(&evento).Association("Participantes").Delete(&participante)
 
-	// for index, p := range evento.Participantes {
-	// 	if p.ID == participante.ID {
-	// 		evento.Participantes = append(evento.Participantes[:index], evento.Participantes[index+1:]...)
-	// 	}
-	// }
-
-	// evento.Participantes = participantes
 	db.Save(&evento)
 
 	db.Preload("Participantes").Find(&evento)
@@ -142,8 +143,8 @@ func GetEvento(ID uint) *Evento {
 	db := InitDB()
 	defer db.Close()
 
+	err := db.Table("eventos").Where("id = ?", ID).First(&evento).Error
 	db.Preload("Participantes").Find(&evento)
-	err := db.Table("eventos").Where("id = ?", ID).First(evento).Error
 
 	if err != nil {
 		fmt.Println(err)
@@ -200,6 +201,7 @@ func GetParticipantesEvento(IDEvento uint) []*Usuario {
 
 	db.Preload("Participantes").First(&evento)
 	db.Table("usuarios").Joins("inner join evento_usuarios on evento_usuarios.usuario_id = usuarios.id").Where("evento_usuarios.evento_id = ?", IDEvento).Scan(&participantes)
+	db.Preload("Participantes").First(&evento)
 
 	return participantes
 }

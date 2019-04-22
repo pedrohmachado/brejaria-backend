@@ -119,3 +119,19 @@ var GetParticipantesEvento = func(w http.ResponseWriter, r *http.Request) {
 	resp["data"] = data
 	u.Respond(w, resp)
 }
+
+// GetEvento lista um evento pelo seu id
+var GetEvento = func(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	IDEvento, err := strconv.Atoi(params["id"])
+
+	if err != nil {
+		fmt.Print(err)
+		return
+	}
+
+	data := models.GetEvento(uint(IDEvento))
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
