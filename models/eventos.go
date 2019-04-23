@@ -17,7 +17,7 @@ type Evento struct {
 	DataCriacao   string     `gorm:"not null" json:"data_criacao"`
 	Status        string     `gorm:"not null" json:"status"`
 	IDUsuario     uint       `gorm:"not null" json:"usuario_id"`
-	Participantes []*Usuario `gorm:"many2many:evento_usuarios" json:"participantes"`
+	Participantes []*Usuario `gorm:"many2many:evento_usuarios" json:"participantes,omitempty"`
 }
 
 // Valida dados de entrada do evento
@@ -161,6 +161,7 @@ func GetEventosUsuario(IDUsuario uint) []*Evento {
 	defer db.Close()
 
 	err := db.Table("eventos").Where("id_usuario = ?", IDUsuario).Find(&eventos).Error
+	// db.Preload("Participantes").Find(&eventos)
 
 	if err != nil {
 		fmt.Println(err)
