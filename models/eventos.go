@@ -17,7 +17,7 @@ type Evento struct {
 	DataCriacao   string     `gorm:"not null" json:"data_criacao"`
 	Status        string     `gorm:"not null" json:"status"`
 	IDUsuario     uint       `gorm:"not null" json:"usuario_id"`
-	Participantes []*Usuario `gorm:"many2many:evento_usuarios" json:"participantes,omitempty"`
+	Participantes []*Usuario `gorm:"many2many:evento_usuarios" json:"participantes"`
 }
 
 // Valida dados de entrada do evento
