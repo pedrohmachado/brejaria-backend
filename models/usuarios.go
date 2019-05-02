@@ -151,3 +151,22 @@ func GetUsuario(ID uint) *Usuario {
 	usuario.Senha = ""
 	return usuario
 }
+
+// AlteraUsuario pelo registro do usuario
+func AlteraUsuario(IDUsuario uint, usuario *Usuario) map[string]interface{} {
+
+	usuario.ID = IDUsuario
+
+	if resp, ok := usuario.Valida(); !ok {
+		return resp
+	}
+
+	db := InitDB()
+	defer db.Close()
+
+	db.Save(&usuario)
+
+	resp := u.Message(true, "Usuário logado")
+	resp["usuario"] = usuario
+	return resp
+}

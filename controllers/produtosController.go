@@ -81,3 +81,20 @@ var GetProdutosEvento = func(w http.ResponseWriter, r *http.Request) {
 	resp["data"] = data
 	u.Respond(w, resp)
 }
+
+// GetProduto recupera o produto pelo id do produto
+var GetProduto = func(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	IDProduto, err := strconv.Atoi(params["id"])
+
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	data := models.GetProduto(uint(IDProduto))
+
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}

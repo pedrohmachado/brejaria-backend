@@ -160,8 +160,8 @@ func GetEventosUsuario(IDUsuario uint) []*Evento {
 	db := InitDB()
 	defer db.Close()
 
-	err := db.Table("eventos").Where("id_usuario = ?", IDUsuario).Find(&eventos).Error
-	// db.Preload("Participantes").Find(&eventos)
+	err := db.Preload("Participantes").Where("id_usuario = ?", IDUsuario).Find(&eventos).Error
+	//err := db.Table("eventos").Where("id_usuario = ?", IDUsuario).Find(&eventos).Error
 
 	if err != nil {
 		fmt.Println(err)
