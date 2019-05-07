@@ -166,6 +166,8 @@ func AlteraUsuario(IDUsuario uint, usuario *Usuario) map[string]interface{} {
 
 	db.Save(&usuario)
 
+	usuario.Senha = ""
+
 	resp := u.Message(true, "Usuário logado")
 	resp["usuario"] = usuario
 	return resp

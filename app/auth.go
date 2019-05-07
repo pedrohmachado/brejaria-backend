@@ -28,6 +28,11 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 			}
 		}
 
+		if strings.Contains(requestPath, "/api/imagem/") {
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		response := make(map[string]interface{})
 		tokenHeader := r.Header.Get("Authorization") // pega o token de autorização do header da requisição
 

@@ -2,12 +2,21 @@ package controllers
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
+	"strconv"
+
+	"github.com/pedrohmachado/brejaria-backend/models"
+	u "github.com/pedrohmachado/brejaria-backend/utils"
+
+	"github.com/gorilla/mux"
 )
 
-// UploadImagem sobe imagem
-var UploadImagem = func(w http.ResponseWriter, r *http.Request) {
+// UploadImagemProduto sobe imagem produto
+var UploadImagemProduto = func(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseMultipartForm(10 << 20)
 
@@ -24,10 +33,11 @@ var UploadImagem = func(w http.ResponseWriter, r *http.Request) {
 
 	defer file.Close()
 
-	tempFile, err := ioutil.TempFile("temp-images", "upload-*.png")
+	tempFile, err := ioutil.TempFile("static/temp-images", "upload-*.png")
 
 	if err != nil {
 		fmt.Println(err)
+		//return
 	}
 
 	defer tempFile.Close()
@@ -36,10 +46,48 @@ var UploadImagem = func(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		fmt.Println(err)
+		//return
 	}
 
 	tempFile.Write(fileBytes)
 
-	nome := tempFile.Name
-	fmt.Println(nome())
+	fmt.Println(tempFile.Name())
+
+	params := mux.Vars(r)
+	idProduto, err := strconv.Atoi(params["id"])
+
+	if err != nil {
+		u.Respond(w, u.Message(false, "Erro enquanto decodificava corpo da requisição"))
+	}
+
+	imagemProduto := &models.ImagemProduto{}
+	imagemProduto.CaminhoImagem = tempFile.Name()
+	imagemProduto.IDProduto = uint(idProduto)
+
+	resp := imagemProduto.Cria()
+	u.Respond(w, resp)
+}
+
+// GetImagemProduto recupera imagem do produto
+var GetImagemProduto = func(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	IDProduto, err := strconv.Atoi(params["id"])
+
+	if err != nil {
+		u.Respond(w, u.Message(false, "Erro enquanto decodificava corpo da requisição"))
+	}
+
+	caminhoImagem := models.GetImagemProduto(uint(IDProduto))
+
+	file, err := os.Open("C:/Users/pedro.machado/Projects/src/github.com/pedrohmachado/brejaria-backend/" + caminhoImagem)
+
+	if err != nil {
+		log.Fatal(err)
+		u.Respond(w, u.Message(false, "Erro enquanto recuperava imagem"))
+	}
+
+	w.Header().Set("Content-Type", "image/png")
+	io.Copy(w, file)
+
 }

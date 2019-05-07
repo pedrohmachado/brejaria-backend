@@ -49,7 +49,9 @@ func main() {
 	router.HandleFunc("/api/eu/eventos", controllers.GetMeusEventos).Methods("GET")
 	router.HandleFunc("/api/eventos", controllers.GetEventos).Methods("GET")
 
-	router.HandleFunc("/api/upload", controllers.UploadImagem).Methods("POST")
+	router.HandleFunc("/api/upload/produto/{id}", controllers.UploadImagemProduto).Methods("POST")
+	router.HandleFunc("/api/imagem/produto/{id}", controllers.GetImagemProduto).Methods("GET")
+	//router.HandleFunc("/api/upload/evento", controllers.UploadImagem).Methods("POST")
 
 	port := os.Getenv("PORT")
 
