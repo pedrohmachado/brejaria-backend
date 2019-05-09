@@ -62,7 +62,7 @@ func (evento *Evento) Cria() map[string]interface{} {
 	}
 
 	// layout do formato de data/hora
-	layout := "02/01/2006 15:04"
+	layout := "2006-01-02 15:04"
 
 	// dados de entrada fixos
 	evento.DataCriacao = time.Now().Format(layout)

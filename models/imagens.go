@@ -1,9 +1,13 @@
 package models
 
-import u "github.com/pedrohmachado/brejaria-backend/utils"
+import (
+	"github.com/jinzhu/gorm"
+	u "github.com/pedrohmachado/brejaria-backend/utils"
+)
 
 // ImagemProduto estrutura
 type ImagemProduto struct {
+	ID            uint   `gorm:"AUTO_INCREMENT" form:"id" json:"id"`
 	CaminhoImagem string `gorm:"not null"`
 	IDProduto     uint   `gorm:"not null"`
 }
@@ -20,6 +24,13 @@ func (imagemProduto *ImagemProduto) Cria() map[string]interface{} {
 		db.Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&ImagemProduto{})
 	}
 
+	temp := &ImagemProduto{}
+
+	err := db.Table("imagem_produtos").Where("id_produto = ?", imagemProduto.IDProduto).First(temp).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return u.Message(false, "Erro de conexão. Tente novamente")
+	}
+
 	db.Create(&imagemProduto)
 
 	resp := u.Message(true, "Registro de imagemProduto efetuado com sucesso")
@@ -34,7 +45,7 @@ func GetImagemProduto(IDProduto uint) string {
 
 	imagemProduto := &ImagemProduto{}
 
-	db.Table("imagem_produtos").Where("id_produto = ?", IDProduto).First(imagemProduto)
+	db.Table("imagem_produtos").Where("id_produto = ?", IDProduto).Last(imagemProduto)
 
 	return imagemProduto.CaminhoImagem
 }
