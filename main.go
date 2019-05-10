@@ -48,6 +48,7 @@ func main() {
 	router.HandleFunc("/api/usuario/{id}/eventos", controllers.GetEventosUsuarioParams).Methods("GET")
 	router.HandleFunc("/api/eu/eventos", controllers.GetMeusEventos).Methods("GET")
 	router.HandleFunc("/api/eventos", controllers.GetEventos).Methods("GET")
+	router.HandleFunc("/api/produto/{id}/eventos", controllers.GetEventosProduto).Methods("GET")
 
 	router.HandleFunc("/api/upload/produto/{id}", controllers.UploadImagemProduto).Methods("POST")
 	router.HandleFunc("/api/imagem/produto/{id}", controllers.GetImagemProduto).Methods("GET")

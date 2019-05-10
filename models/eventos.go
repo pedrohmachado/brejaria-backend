@@ -206,3 +206,23 @@ func GetParticipantesEvento(IDEvento uint) []*Usuario {
 
 	return participantes
 }
+
+// GetEventosProduto recupera todos os eventos relacionados ao ID do produto
+// encontrar o produto, encontrar o dono do produto e encontrar em quantos eventos o dono do produto está inscrito
+func GetEventosProduto(IDProduto uint) []*Evento {
+
+	produto := GetProduto(IDProduto)
+	eventos := make([]*Evento, 0)
+
+	db := InitDB()
+	defer db.Close()
+
+	err := db.Preload("Participantes").Where("id_usuario = ?", produto.IDUsuario).Find(&eventos).Error
+
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	return eventos
+}

@@ -135,3 +135,18 @@ var GetEvento = func(w http.ResponseWriter, r *http.Request) {
 	resp["data"] = data
 	u.Respond(w, resp)
 }
+
+var GetEventosProduto = func(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	IDProduto, err := strconv.Atoi(params["id"])
+
+	if err != nil {
+		fmt.Print(err)
+		return
+	}
+
+	data := models.GetEventosProduto(uint(IDProduto))
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
