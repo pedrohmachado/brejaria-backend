@@ -136,6 +136,7 @@ var GetEvento = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
+// GetEventosProduto recupera todos os eventos relacionado a produto
 var GetEventosProduto = func(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	IDProduto, err := strconv.Atoi(params["id"])

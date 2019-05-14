@@ -38,6 +38,13 @@ func main() {
 	router.HandleFunc("/api/produtos", controllers.GetProdutos).Methods("GET")
 	router.HandleFunc("/api/produto/{id}", controllers.GetProduto).Methods("GET")
 
+	router.HandleFunc("/api/produto/{id}/avaliar", controllers.AvaliaProduto).Methods("POST")
+	router.HandleFunc("/api/evento/{id}/avaliar", controllers.AvaliaEvento).Methods("POST")
+	router.HandleFunc("/api/produto/{id}/avaliacao", controllers.AvaliacaoMediaProduto).Methods("GET")
+	router.HandleFunc("/api/evento/{id}/avaliacao", controllers.AvaliacaoMediaEvento).Methods("GET")
+	router.HandleFunc("/api/produto/{id}/avaliacao-usuario", controllers.GetAvaliacaoProdutoUsuario).Methods("GET")
+	router.HandleFunc("/api/evento/{id}/avaliacao-usuario", controllers.GetAvaliacaoEventoUsuario).Methods("GET")
+
 	router.HandleFunc("/api/evento/{id}/participantes", controllers.GetParticipantesEvento).Methods("GET")
 	router.HandleFunc("/api/evento/{id}/produtos", controllers.GetProdutosEvento).Methods("GET")
 

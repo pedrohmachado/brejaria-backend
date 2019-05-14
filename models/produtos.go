@@ -12,6 +12,7 @@ type Produto struct {
 	Nome      string `gorm:"not null" json:"nome"`
 	Descricao string `gorm:"not null" json:"descricao"`
 	IDUsuario uint   `gorm:"not null" json:"usuario_id"`
+	Avaliacao float32
 }
 
 // Valida dados de entrada de produto
@@ -67,6 +68,7 @@ func GetProduto(ID uint) *Produto {
 		fmt.Println(err)
 		return nil
 	}
+
 	return produto
 }
 
