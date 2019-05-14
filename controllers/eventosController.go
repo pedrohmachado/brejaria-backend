@@ -151,3 +151,13 @@ var GetEventosProduto = func(w http.ResponseWriter, r *http.Request) {
 	resp["data"] = data
 	u.Respond(w, resp)
 }
+
+// GetEventosParticipante recupera todos os eventos que o usuario participa
+var GetEventosParticipante = func(w http.ResponseWriter, r *http.Request) {
+	IDUsuario := r.Context().Value("usuario").(uint)
+
+	data := models.GetEventosParticipante(IDUsuario)
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
