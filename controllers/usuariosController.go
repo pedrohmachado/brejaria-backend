@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/mux"
+
 	"github.com/pedrohmachado/brejaria-backend/models"
 	u "github.com/pedrohmachado/brejaria-backend/utils"
 )
@@ -24,7 +26,9 @@ var AlteraUsuario = func(w http.ResponseWriter, r *http.Request) {
 
 	usuario := &models.Usuario{}
 
-	IDUsuario := r.Context().Value("usuario").(uint)
+	params := mux.Vars(r)
+
+	novaSenha := params["senha"]
 
 	err := json.NewDecoder(r.Body).Decode(usuario) // decoda a requisição
 
@@ -33,7 +37,7 @@ var AlteraUsuario = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := models.AlteraUsuario(IDUsuario, usuario)
+	data := models.AlteraUsuario(usuario, usuario.Senha, novaSenha)
 	resp := u.Message(true, "Sucesso")
 	resp["data"] = data
 	u.Respond(w, resp)

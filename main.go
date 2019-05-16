@@ -25,10 +25,12 @@ func main() {
 
 	// middleware para autenticação com jwt
 	router.Use(app.JwtAuthentication)
+	// middleware para distinção de perfil
+	router.Use(app.PerfilAuthentication)
 
 	router.HandleFunc("/api/usuario/novo", controllers.CriaUsuario).Methods("POST")
 	router.HandleFunc("/api/usuario/login", controllers.Autentica).Methods("POST")
-	router.HandleFunc("/api/usuario/alterar", controllers.AlteraUsuario).Methods("PUT")
+	router.HandleFunc("/api/usuario/{senha}/alterar", controllers.AlteraUsuario).Methods("PUT")
 
 	router.HandleFunc("/api/eu", controllers.GetUsuario).Methods("GET")
 

@@ -20,11 +20,12 @@ type Token struct {
 
 // Usuario modelo
 type Usuario struct {
-	ID    uint   `gorm:"AUTO_INCREMENT" form:"id" json:"id"`
-	Nome  string `gorm:"not null" json:"nome"`
-	Email string `gorm:"not null" json:"email"`
-	Senha string `gorm:"not null" json:"senha,omitempty"`
-	Token string `gorm:"not null" json:"token,omitempty"`
+	ID     uint   `gorm:"AUTO_INCREMENT" form:"id" json:"id"`
+	Nome   string `gorm:"not null" json:"nome"`
+	Email  string `gorm:"not null" json:"email"`
+	Senha  string `gorm:"not null" json:"senha,omitempty"`
+	Token  string `gorm:"not null" json:"token,omitempty"`
+	Perfil string `gorm:"not null" json:"perfil"`
 	//Eventos []Evento `gorm:"many2many:usuario_evento;" json:"eventos"`
 }
 
@@ -153,22 +154,50 @@ func GetUsuario(ID uint) *Usuario {
 }
 
 // AlteraUsuario pelo registro do usuario
-func AlteraUsuario(IDUsuario uint, usuario *Usuario) map[string]interface{} {
+func AlteraUsuario(usuario *Usuario, senha, novaSenha string) map[string]interface{} {
 
-	usuario.ID = IDUsuario
-
-	if resp, ok := usuario.Valida(); !ok {
-		return resp
-	}
+	temp := &Usuario{}
 
 	db := InitDB()
 	defer db.Close()
+
+	err := db.Table("usuarios").Where("email = ? ", usuario.Email).First(temp).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return u.Message(false, "Email não encontrado")
+		}
+		return u.Message(false, "Falha na conexão. Tente novamente")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(temp.Senha), []byte(senha))
+
+	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+		return u.Message(false, "Credenciais inválidas. Tente novamente")
+	}
+
+	usuario.Senha = novaSenha
+
+	if !strings.Contains(usuario.Email, "@") {
+		return u.Message(false, "E-mail válido requer '@'")
+	}
+
+	if len(usuario.Senha) < 6 {
+		return u.Message(false, "Senha válida requer no mínimo 6 caracteres")
+	}
+
+	if usuario.Nome == "" {
+		return u.Message(false, "O preenchimento do nome é obrigatório")
+	}
+
+	hashedSenha, _ := bcrypt.GenerateFromPassword([]byte(usuario.Senha), bcrypt.DefaultCost)
+	usuario.Senha = string(hashedSenha)
 
 	db.Save(&usuario)
 
 	usuario.Senha = ""
 
-	resp := u.Message(true, "Usuário logado")
+	resp := u.Message(true, "Usuário alterado")
 	resp["usuario"] = usuario
 	return resp
 }
