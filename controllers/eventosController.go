@@ -161,3 +161,19 @@ var GetEventosParticipante = func(w http.ResponseWriter, r *http.Request) {
 	resp["data"] = data
 	u.Respond(w, resp)
 }
+
+// GetEventosProdutor recupera eventos de um produtor pelo id dele
+var GetEventosProdutor = func(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	IDProdutor, err := strconv.Atoi(params["id"])
+
+	if err != nil {
+		fmt.Print(err)
+		return
+	}
+
+	data := models.GetEventosProdutor(uint(IDProdutor))
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}

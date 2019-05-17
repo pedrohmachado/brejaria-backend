@@ -2,6 +2,7 @@ package app
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/pedrohmachado/brejaria-backend/models"
 
@@ -28,6 +29,11 @@ var PerfilAuthentication = func(next http.Handler) http.Handler {
 				next.ServeHTTP(w, r)
 				return
 			}
+		}
+
+		if strings.Contains(requestPath, "/api/imagem/") {
+			next.ServeHTTP(w, r)
+			return
 		}
 
 		// recupera perfil do usuario

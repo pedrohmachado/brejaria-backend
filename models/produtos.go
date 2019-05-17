@@ -120,3 +120,19 @@ func GetProdutosEvento(IDEvento uint) []*Produto {
 
 	return produtos
 }
+
+// GetProdutosProdutor recupera produtos de um usuario perfil produtor/geral pelo seu id
+func GetProdutosProdutor(IDUsuario uint) map[string]interface{} {
+
+	produtos := make([]*Produto, 0)
+
+	db := InitDB()
+	defer db.Close()
+
+	db.Table("produtos").Where("id_usuario = ?", IDUsuario).Find(&produtos)
+
+	resp := u.Message(true, "Produtos do produtor recuperado com sucesso")
+	resp["produtos"] = produtos
+	return resp
+
+}

@@ -32,6 +32,11 @@ func main() {
 	router.HandleFunc("/api/usuario/login", controllers.Autentica).Methods("POST")
 	router.HandleFunc("/api/usuario/{senha}/alterar", controllers.AlteraUsuario).Methods("PUT")
 
+	router.HandleFunc("/api/produtores", controllers.GetProdutores).Methods("GET")
+	router.HandleFunc("/api/produtor/{id}", controllers.GetProdutor).Methods("GET")
+	router.HandleFunc("/api/produtor/{id}/produtos", controllers.GetProdutosProdutor).Methods("GET")
+	router.HandleFunc("/api/produtor/{id}/eventos", controllers.GetEventosProdutor).Methods("GET")
+
 	router.HandleFunc("/api/eu", controllers.GetUsuario).Methods("GET")
 
 	router.HandleFunc("/api/produto/novo", controllers.CriaProduto).Methods("POST")

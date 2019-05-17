@@ -167,3 +167,4 @@ var GetImagemEvento = func(w http.ResponseWriter, r *http.Request) {
 	io.Copy(w, file)
 
 }
+

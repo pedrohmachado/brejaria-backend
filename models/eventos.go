@@ -242,3 +242,19 @@ func GetEventosParticipante(IDUsuario uint) map[string]interface{} {
 	resp["eventosInscritos"] = eventosInscritos
 	return resp
 }
+
+// GetEventosProdutor recupera eventos que um usuario produtor/geral possui
+func GetEventosProdutor(IDUsuario uint) map[string]interface{} {
+
+	eventos := make([]*Evento, 0)
+
+	db := InitDB()
+	defer db.Close()
+
+	//err := db.Preload("Participantes").Where("id_usuario = ?", IDUsuario).Find(&eventosInscritos).Error
+	db.Table("eventos").Joins("inner join evento_usuarios on evento_usuarios.evento_id = eventos.id").Where("evento_usuarios.usuario_id = ?", IDUsuario).Scan(&eventos)
+
+	resp := u.Message(true, "Eventos recuperados com sucesso")
+	resp["eventos"] = eventos
+	return resp
+}

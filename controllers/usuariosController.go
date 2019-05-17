@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 
@@ -38,6 +40,30 @@ var AlteraUsuario = func(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := models.AlteraUsuario(usuario, usuario.Senha, novaSenha)
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
+// GetProdutores recupera produtores
+var GetProdutores = func(w http.ResponseWriter, r *http.Request) {
+	data := models.GetProdutores()
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
+// GetProdutor recupera usuario perfil produtor/geral pelo id do usuario
+var GetProdutor = func(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	IDProdutor, err := strconv.Atoi(params["id"])
+
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	data := models.GetProdutor(uint(IDProdutor))
 	resp := u.Message(true, "Sucesso")
 	resp["data"] = data
 	u.Respond(w, resp)

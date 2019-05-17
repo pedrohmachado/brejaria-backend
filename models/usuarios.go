@@ -176,7 +176,9 @@ func AlteraUsuario(usuario *Usuario, senha, novaSenha string) map[string]interfa
 		return u.Message(false, "Credenciais inválidas. Tente novamente")
 	}
 
-	usuario.Senha = novaSenha
+	if novaSenha != "" {
+		usuario.Senha = novaSenha
+	}
 
 	if !strings.Contains(usuario.Email, "@") {
 		return u.Message(false, "E-mail válido requer '@'")
@@ -200,4 +202,33 @@ func AlteraUsuario(usuario *Usuario, senha, novaSenha string) map[string]interfa
 	resp := u.Message(true, "Usuário alterado")
 	resp["usuario"] = usuario
 	return resp
+}
+
+// GetProdutores recupera usuarios perfil produtor e geral
+func GetProdutores() map[string]interface{} {
+	usuarios := make([]*Usuario, 0)
+
+	db := InitDB()
+	defer db.Close()
+
+	db.Table("usuarios").Where("perfil = ? OR perfil = ?", "produtor", "geral").Find(&usuarios)
+
+	resp := u.Message(true, "Produtores recuperados com sucesso")
+	resp["usuarios"] = usuarios
+	return resp
+}
+
+// GetProdutor recupera usuario perfil produtor/geral pelo id do usuario
+func GetProdutor(IDUsuario uint) map[string]interface{} {
+
+	usuario := &Usuario{}
+
+	db := InitDB()
+	defer db.Close()
+	db.Table("usuarios").Where("id = ?", IDUsuario).Find(&usuario)
+
+	resp := u.Message(true, "Produtor recuperado com sucesso")
+	resp["usuario"] = usuario
+	return resp
+
 }
