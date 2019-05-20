@@ -20,12 +20,13 @@ type Token struct {
 
 // Usuario modelo
 type Usuario struct {
-	ID     uint   `gorm:"AUTO_INCREMENT" form:"id" json:"id"`
-	Nome   string `gorm:"not null" json:"nome"`
-	Email  string `gorm:"not null" json:"email"`
-	Senha  string `gorm:"not null" json:"senha,omitempty"`
-	Token  string `gorm:"not null" json:"token,omitempty"`
-	Perfil string `gorm:"not null" json:"perfil"`
+	ID      uint   `gorm:"AUTO_INCREMENT" form:"id" json:"id"`
+	Nome    string `gorm:"not null" json:"nome"`
+	Email   string `gorm:"not null" json:"email"`
+	Senha   string `gorm:"not null" json:"senha,omitempty"`
+	Token   string `gorm:"not null" json:"token,omitempty"`
+	Perfil  string `gorm:"not null" json:"perfil"`
+	Contato string `gorm:"not null" json:"contato"`
 	//Eventos []Evento `gorm:"many2many:usuario_evento;" json:"eventos"`
 }
 
