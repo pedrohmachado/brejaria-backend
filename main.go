@@ -44,6 +44,7 @@ func main() {
 	router.HandleFunc("/api/eu/produtos", controllers.GetMeusProdutos).Methods("GET")
 	router.HandleFunc("/api/produtos", controllers.GetProdutos).Methods("GET")
 	router.HandleFunc("/api/produto/{id}", controllers.GetProduto).Methods("GET")
+	router.HandleFunc("/api/produto/alterar", controllers.AlteraProduto).Methods("PUT")
 
 	router.HandleFunc("/api/produto/{id}/avaliar", controllers.AvaliaProduto).Methods("POST")
 	router.HandleFunc("/api/evento/{id}/avaliar", controllers.AvaliaEvento).Methods("POST")
@@ -64,6 +65,10 @@ func main() {
 	router.HandleFunc("/api/eu/eventos", controllers.GetMeusEventos).Methods("GET")
 	router.HandleFunc("/api/eventos", controllers.GetEventos).Methods("GET")
 	router.HandleFunc("/api/produto/{id}/eventos", controllers.GetEventosProduto).Methods("GET")
+	router.HandleFunc("/api/evento/alterar", controllers.AlteraEvento).Methods("PUT")
+	router.HandleFunc("/api/evento/{id}/adicionar-produtos", controllers.AdicionaProdutosEvento).Methods("POST")
+	router.HandleFunc("/api/evento/{id}/remover-produtos", controllers.RemoveProdutosEvento).Methods("POST")
+	router.HandleFunc("/api/evento/{id}/produtos-ref", controllers.GetProdutosRefEvento).Methods("GET")
 
 	router.HandleFunc("/api/upload/produto/{id}", controllers.UploadImagemProduto).Methods("POST")
 	router.HandleFunc("/api/imagem/produto/{id}", controllers.GetImagemProduto).Methods("GET")

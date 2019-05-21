@@ -84,6 +84,22 @@ func (evento *Evento) Cria() map[string]interface{} {
 	return resp
 }
 
+// AlteraEvento altera o evento
+func AlteraEvento(evento *Evento) map[string]interface{} {
+	if resp, ok := evento.Valida(); !ok {
+		return resp
+	}
+
+	db := InitDB()
+	defer db.Close()
+
+	db.Save(&evento).Where("id = ?", evento.ID)
+
+	resp := u.Message(true, "Evento alterado com sucesso")
+	resp["evento"] = evento
+	return resp
+}
+
 // AdicionaParticipante a um evento pelo id do evento e id do participante
 func AdicionaParticipante(IDEvento, IDParticipante uint) map[string]interface{} {
 

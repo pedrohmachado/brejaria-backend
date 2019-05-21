@@ -29,6 +29,27 @@ var CriaEvento = func(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// AlteraEvento altera evento
+var AlteraEvento = func(w http.ResponseWriter, r *http.Request) {
+
+	IDUsuario := r.Context().Value("usuario").(uint)
+	evento := &models.Evento{}
+
+	err := json.NewDecoder(r.Body).Decode(evento)
+	if err != nil {
+		u.Respond(w, u.Message(false, "Erro enquanto decodificava corpo da requisição"))
+	}
+
+	if evento.IDUsuario != IDUsuario {
+		u.Respond(w, u.Message(false, "Evento não pertence ao usuário"))
+	}
+
+	data := models.AlteraEvento(evento)
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
 // AdicionaParticipante com o ID do participante por contexto e ID do evento por parametro
 var AdicionaParticipante = func(w http.ResponseWriter, r *http.Request) {
 

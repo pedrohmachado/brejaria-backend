@@ -12,7 +12,6 @@ type Produto struct {
 	Nome      string `gorm:"not null" json:"nome"`
 	Descricao string `gorm:"not null" json:"descricao"`
 	IDUsuario uint   `gorm:"not null" json:"usuario_id"`
-	Avaliacao float32
 }
 
 // Valida dados de entrada de produto
@@ -51,6 +50,23 @@ func (produto *Produto) Cria() map[string]interface{} {
 	db.Create(&produto)
 
 	resp := u.Message(true, "Produto cadastrado com sucesso")
+	resp["produto"] = produto
+	return resp
+}
+
+// Altera produto
+func Altera(produto *Produto) map[string]interface{} {
+
+	if resp, ok := produto.Valida(); !ok {
+		return resp
+	}
+
+	db := InitDB()
+	defer db.Close()
+
+	db.Save(&produto).Where("id = ?", produto.ID)
+
+	resp := u.Message(true, "Produto alterado com sucesso")
 	resp["produto"] = produto
 	return resp
 }

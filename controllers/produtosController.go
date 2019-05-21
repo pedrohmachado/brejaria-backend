@@ -28,6 +28,28 @@ var CriaProduto = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
+// AlteraProduto confirmando o ID do usuário dono do produto
+var AlteraProduto = func(w http.ResponseWriter, r *http.Request) {
+
+	IDUsuario := r.Context().Value("usuario").(uint)
+	produto := &models.Produto{}
+
+	err := json.NewDecoder(r.Body).Decode(produto)
+	if err != nil {
+		u.Respond(w, u.Message(false, "Erro enquanto decodificava corpo da requisição"))
+	}
+
+	if IDUsuario != produto.IDUsuario {
+		u.Respond(w, u.Message(false, "O produto não pertence ao produtor"))
+		return
+	}
+
+	data := models.Altera(produto)
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
 // GetProdutosParams com o ID do usuario por parametro
 var GetProdutosParams = func(w http.ResponseWriter, r *http.Request) {
 
