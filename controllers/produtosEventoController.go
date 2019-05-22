@@ -50,4 +50,41 @@ var GetProdutosRefEvento = func(w http.ResponseWriter, r *http.Request) {
 }
 
 // RemoveProdutosEvento remove produto relacionado a evento
-var RemoveProdutosEvento = func(w http.ResponseWriter, r *http.Request) {}
+var RemoveProdutosEvento = func(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	IDEvento, err := strconv.Atoi(params["id"])
+	produtos := make([]*models.Produto, 0)
+
+	if err != nil {
+		fmt.Print(err)
+		return
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&produtos)
+	if err != nil {
+		u.Respond(w, u.Message(false, "Erro enquanto decodificava corpo da requisição"))
+	}
+
+	data := models.RemoveProdutosEvento(uint(IDEvento), produtos)
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
+
+// GetEventosRefProduto recupera eventos de um produto atraves do id do produto
+var GetEventosRefProduto = func(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	IDProduto, err := strconv.Atoi(params["id"])
+
+	if err != nil {
+		fmt.Print(err)
+		return
+	}
+
+	data := models.GetEventosRefProduto(uint(IDProduto))
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}

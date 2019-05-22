@@ -198,3 +198,19 @@ var GetEventosProdutor = func(w http.ResponseWriter, r *http.Request) {
 	resp["data"] = data
 	u.Respond(w, resp)
 }
+
+// GetCriadorEvento recupera criador pelo id do evento
+var GetCriadorEvento = func(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	IDEvento, err := strconv.Atoi(params["id"])
+
+	if err != nil {
+		fmt.Print(err)
+		return
+	}
+
+	data := models.GetCriadorEvento(uint(IDEvento))
+	resp := u.Message(true, "Sucesso")
+	resp["data"] = data
+	u.Respond(w, resp)
+}

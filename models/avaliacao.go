@@ -80,6 +80,7 @@ func GetAvaliacaoMediaProduto(IDProduto uint) map[string]interface{} {
 
 	resp := u.Message(true, "Avaliação média computada com sucesso")
 	resp["avaliacaoMediaProduto"] = media
+	resp["numAvaliacoes"] = len(avaliacoesProduto)
 	return resp
 }
 
@@ -104,6 +105,7 @@ func GetAvaliacaoMediaEvento(IDEvento uint) map[string]interface{} {
 
 	resp := u.Message(true, "Avaliação média computada com sucesso")
 	resp["avaliacaoMediaEvento"] = media
+	resp["numAvaliacoes"] = len(avaliacoesEvento)
 	return resp
 }
 

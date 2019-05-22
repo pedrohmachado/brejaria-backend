@@ -274,3 +274,17 @@ func GetEventosProdutor(IDUsuario uint) map[string]interface{} {
 	resp["eventos"] = eventos
 	return resp
 }
+
+// GetCriadorEvento recupera dados do criador do evento pelo id do evento
+func GetCriadorEvento(IDEvento uint) map[string]interface{} {
+	criador := &Usuario{}
+
+	db := InitDB()
+	defer db.Close()
+
+	db.Table("usuarios").Joins("inner join eventos on eventos.id_usuario = usuarios.id").Where("eventos.id = ?", IDEvento).Scan(&criador)
+
+	resp := u.Message(true, "Criador do evento recuperado com sucesso")
+	resp["criador"] = criador
+	return resp
+}
