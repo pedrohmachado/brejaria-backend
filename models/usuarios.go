@@ -109,7 +109,7 @@ func Login(email, senha string) map[string]interface{} {
 	defer db.Close()
 
 	// localiza usuario
-	err := db.Table("usuarios").Where("email = ? ", email).First(usuario).Error
+	err := db.Table("usuarios").Where("email = ? ", email).First(&usuario).Error
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
